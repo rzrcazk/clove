@@ -124,10 +124,13 @@ class ClaudeWebClient:
 
     async def create_conversation(self) -> str:
         """Create a new conversation."""
+        raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations"
+        logger.info(f"[create_conversation] url before join: {raw_url}")
         url = urljoin(
             self.endpoint,
-            f"api/organizations/{self.account.organization_uuid}/chat_conversations",
+            raw_url,
         )
+        logger.info(f"[create_conversation] url after join: {url}")
 
         uuid = uuid4()
 
@@ -146,19 +149,25 @@ class ClaudeWebClient:
 
     async def set_paprika_mode(self, conv_uuid: str, mode: Optional[str]) -> None:
         """Set the conversation mode."""
+        raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}"
+        loggger.info(f"[set_paprika_mode] url before join: {raw_url}")
         url = urljoin(
             self.endpoint,
-            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}",
+            raw_url,
         )
+        loggger.info(f"[set_paprika_mode] url after join: {url}")
         payload = {"settings": {"paprika_mode": mode}}
         await self._request("PUT", url, json=payload)
-        logger.debug(f"Set conversation {conv_uuid} mode: {mode}")
+        loggger.info(f"Set conversation {conv_uuid} mode: {mode}")
 
     async def upload_file(
         self, file_data: bytes, filename: str, content_type: str
     ) -> str:
         """Upload a file and return file UUID."""
-        url = urljoin(self.endpoint, f"api/{self.account.organization_uuid}/upload")
+        raw_url = f"api/{self.account.organization_uuid}/upload"
+        loggger.info(f"[upload_file] url before join: {raw_url}")
+        url = urljoin(self.endpoint, raw_url)
+        loggger.info(f"[upload_file] url after join: {url}")
         files = {"file": (filename, file_data, content_type)}
 
         response = await self._request("POST", url, files=files)
@@ -168,10 +177,13 @@ class ClaudeWebClient:
 
     async def send_message(self, payload: Dict[str, Any], conv_uuid: str) -> Response:
         """Send a message and return the response."""
+        raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/completion"
+        loggger.info(f"[send_message] url before join: {raw_url}")
         url = urljoin(
             self.endpoint,
-            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/completion",
+            raw_url,
         )
+        loggger.info(f"[send_message] url after join: {url}")
 
         headers = {
             "Accept": "text/event-stream",
@@ -185,10 +197,13 @@ class ClaudeWebClient:
 
     async def send_tool_result(self, payload: Dict[str, Any], conv_uuid: str):
         """Send tool result to Claude.ai."""
+        raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/tool_result"
+        loggger.info(f"[send_tool_result] url before join: {raw_url}")
         url = urljoin(
             self.endpoint,
-            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/tool_result",
+            raw_url,
         )
+        loggger.info(f"[send_tool_result] url after join: {url}")
 
         await self._request("POST", url, conv_uuid=conv_uuid, json=payload)
 
@@ -197,10 +212,13 @@ class ClaudeWebClient:
         if not conv_uuid:
             return
 
+        raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}"
+        loggger.info(f"[delete_conversation] url before join: {raw_url}")
         url = urljoin(
             self.endpoint,
-            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}",
+            raw_url,
         )
+        loggger.info(f"[delete_conversation] url after join: {url}")
         try:
             await self._request("DELETE", url, conv_uuid=conv_uuid)
             logger.info(f"Deleted conversation: {conv_uuid}")
