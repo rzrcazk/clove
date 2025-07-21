@@ -126,7 +126,7 @@ class ClaudeWebClient:
         """Create a new conversation."""
         url = urljoin(
             self.endpoint,
-            f"/api/organizations/{self.account.organization_uuid}/chat_conversations",
+            f"api/organizations/{self.account.organization_uuid}/chat_conversations",
         )
 
         uuid = uuid4()
@@ -148,7 +148,7 @@ class ClaudeWebClient:
         """Set the conversation mode."""
         url = urljoin(
             self.endpoint,
-            f"/api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}",
+            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}",
         )
         payload = {"settings": {"paprika_mode": mode}}
         await self._request("PUT", url, json=payload)
@@ -158,7 +158,7 @@ class ClaudeWebClient:
         self, file_data: bytes, filename: str, content_type: str
     ) -> str:
         """Upload a file and return file UUID."""
-        url = urljoin(self.endpoint, f"/api/{self.account.organization_uuid}/upload")
+        url = urljoin(self.endpoint, f"api/{self.account.organization_uuid}/upload")
         files = {"file": (filename, file_data, content_type)}
 
         response = await self._request("POST", url, files=files)
@@ -170,7 +170,7 @@ class ClaudeWebClient:
         """Send a message and return the response."""
         url = urljoin(
             self.endpoint,
-            f"/api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/completion",
+            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/completion",
         )
 
         headers = {
@@ -187,7 +187,7 @@ class ClaudeWebClient:
         """Send tool result to Claude.ai."""
         url = urljoin(
             self.endpoint,
-            f"/api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/tool_result",
+            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/tool_result",
         )
 
         await self._request("POST", url, conv_uuid=conv_uuid, json=payload)
@@ -199,7 +199,7 @@ class ClaudeWebClient:
 
         url = urljoin(
             self.endpoint,
-            f"/api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}",
+            f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}",
         )
         try:
             await self._request("DELETE", url, conv_uuid=conv_uuid)
