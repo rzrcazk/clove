@@ -125,15 +125,14 @@ class ClaudeWebClient:
     async def create_conversation(self) -> str:
         """Create a new conversation."""
         raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations"
-        logger.info(f"[create_conversation] url before join: {raw_url}")
+       
+         logger.info(f"[create_conversation] url before join: {raw_url},self.endpoint: {self.endpoint}")
         url = urljoin(
-            self.endpoint,
+            self.endpoint+"/",
             raw_url,
         )
         logger.info(f"[create_conversation] url after join: {url}")
-
         uuid = uuid4()
-
         payload = {
             "name": "Hello World!",
             "uuid": str(uuid),
@@ -152,26 +151,19 @@ class ClaudeWebClient:
         raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}"
         loggger.info(f"[set_paprika_mode] url before join: {raw_url}")
         url = urljoin(
-            self.endpoint,
+            self.endpoint+"/",
             raw_url,
         )
-        loggger.info(f"[set_paprika_mode] url after join: {url}")
         payload = {"settings": {"paprika_mode": mode}}
         await self._request("PUT", url, json=payload)
-        loggger.info(f"Set conversation {conv_uuid} mode: {mode}")
-
     async def upload_file(
         self, file_data: bytes, filename: str, content_type: str
     ) -> str:
         """Upload a file and return file UUID."""
         raw_url = f"api/{self.account.organization_uuid}/upload"
-        loggger.info(f"[upload_file] url before join: {raw_url}")
-        url = urljoin(self.endpoint, raw_url)
-        loggger.info(f"[upload_file] url after join: {url}")
+        url = urljoin(self.endpoint+"/", raw_url)
         files = {"file": (filename, file_data, content_type)}
-
         response = await self._request("POST", url, files=files)
-
         data = UploadResponse.model_validate(await response.json())
         return data.file_uuid
 
@@ -180,7 +172,7 @@ class ClaudeWebClient:
         raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/completion"
         loggger.info(f"[send_message] url before join: {raw_url}")
         url = urljoin(
-            self.endpoint,
+            self.endpoint+"/",
             raw_url,
         )
         loggger.info(f"[send_message] url after join: {url}")
@@ -200,11 +192,9 @@ class ClaudeWebClient:
         raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}/tool_result"
         loggger.info(f"[send_tool_result] url before join: {raw_url}")
         url = urljoin(
-            self.endpoint,
+            self.endpoint+"/",
             raw_url,
         )
-        loggger.info(f"[send_tool_result] url after join: {url}")
-
         await self._request("POST", url, conv_uuid=conv_uuid, json=payload)
 
     async def delete_conversation(self, conv_uuid: str) -> None:
@@ -215,10 +205,9 @@ class ClaudeWebClient:
         raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations/{conv_uuid}"
         loggger.info(f"[delete_conversation] url before join: {raw_url}")
         url = urljoin(
-            self.endpoint,
+            self.endpoint+"/",
             raw_url,
         )
-        loggger.info(f"[delete_conversation] url after join: {url}")
         try:
             await self._request("DELETE", url, conv_uuid=conv_uuid)
             logger.info(f"Deleted conversation: {conv_uuid}")
