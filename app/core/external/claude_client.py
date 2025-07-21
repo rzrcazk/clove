@@ -125,14 +125,17 @@ class ClaudeWebClient:
     async def create_conversation(self) -> str:
         """Create a new conversation."""
         raw_url = f"api/organizations/{self.account.organization_uuid}/chat_conversations"
-       
-         logger.info(f"[create_conversation] url before join: {raw_url},self.endpoint: {self.endpoint}")
+        logger.info(f"[create_conversation] url before join: {raw_url}")
+        logger.info(f"[create_conversation] self.endpoint: {self.endpoint}")
         url = urljoin(
             self.endpoint+"/",
             raw_url,
         )
+     
         logger.info(f"[create_conversation] url after join: {url}")
+
         uuid = uuid4()
+
         payload = {
             "name": "Hello World!",
             "uuid": str(uuid),
